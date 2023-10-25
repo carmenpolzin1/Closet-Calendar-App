@@ -13,6 +13,9 @@
         android:theme="@style/Theme.ClosetCalendar"
         tools:targetApi="31">
         <activity
+            android:name=".NewEntryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ClosetActivity"
             android:exported="false" />
         <activity
