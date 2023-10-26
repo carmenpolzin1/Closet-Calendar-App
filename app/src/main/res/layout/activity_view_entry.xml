@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewEntryActivity">
+    tools:context=".ViewEntryActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,14 +32,16 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
-                    android:id="@+id/saveButton"
+                    android:id="@+id/editButton"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="right"
+                    android:layout_weight="1"
                     android:background="#FEFAFD"
                     android:scaleType="centerInside"
-                    android:src="@drawable/saveIcon" />
+                    android:src="@drawable/editIcon" />
             </FrameLayout>
+
         </LinearLayout>
 
         <TextView
@@ -104,14 +106,13 @@
                 android:src="@tools:sample/avatars"
                 app:srcCompat="@drawable/locationIcon" />
 
-            <EditText
+            <TextView
                 android:id="@+id/locationDescTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:hint="Type the location here!"
-                android:inputType="text"
+                android:text="Madison,WI"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -147,13 +148,12 @@
                 android:text="50&#xb0;|70&#xb0;"
                 android:textSize="16sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/weatherDescTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:hint="Type the weather here!"
-                android:inputType="text"
+                android:text="Sunny"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -187,15 +187,14 @@
             android:layout_height="match_parent"
             android:background="@drawable/notes_background">
 
-            <EditText
+            <TextView
                 android:id="@+id/notesTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:background="#FDF9FC"
                 android:gravity="start"
-                android:hint="Write notes about the outfit here!"
-                android:inputType="text"
+                android:text="Typed note"
                 android:textSize="16sp" />
         </FrameLayout>
 
