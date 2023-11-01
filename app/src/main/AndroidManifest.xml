@@ -19,6 +19,12 @@
         android:theme="@style/Theme.ClosetCalendar"
         tools:targetApi="31">
         <activity
+            android:name=".ChooseClosetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeleteClosetActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
             android:exported="false" />
         <activity
