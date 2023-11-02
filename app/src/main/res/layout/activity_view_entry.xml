@@ -25,7 +25,8 @@
                 android:layout_gravity="left"
                 android:background="#FEFAFD"
                 android:scaleType="centerInside"
-                android:src="@drawable/exit_icon" />
+                android:src="@drawable/exit_icon"
+                android:onClick="onClickExitButton" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -39,7 +40,8 @@
                     android:layout_weight="1"
                     android:background="#FEFAFD"
                     android:scaleType="centerInside"
-                    android:src="@drawable/edit_icon" />
+                    android:src="@drawable/edit_icon"
+                    android:onClick="onClickEditButton"/>
             </FrameLayout>
 
         </LinearLayout>
@@ -105,7 +107,7 @@
                 android:src="@drawable/location_icon" />
 
             <TextView
-                android:id="@+id/locationDescTextView"
+                android:id="@+id/locationDescEditView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -146,7 +148,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/weatherDescTextView"
+                android:id="@+id/weatherDescEditView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -185,7 +187,7 @@
 
             <TextView
 
-                android:id="@+id/notesTextView"
+                android:id="@+id/notesEditView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"

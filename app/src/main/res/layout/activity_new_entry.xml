@@ -103,7 +103,7 @@
                 android:src="@drawable/location_icon" />
 
             <EditText
-                android:id="@+id/locationDescTextView"
+                android:id="@+id/locationDescEditView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -145,7 +145,7 @@
                 android:textSize="16sp" />
 
             <EditText
-                android:id="@+id/weatherDescTextView"
+                android:id="@+id/weatherDescEditView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -184,7 +184,7 @@
             android:background="@drawable/notes_background">
 
             <EditText
-                android:id="@+id/notesTextView"
+                android:id="@+id/notesEditView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
