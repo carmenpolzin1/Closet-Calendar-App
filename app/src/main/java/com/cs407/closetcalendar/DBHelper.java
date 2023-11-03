@@ -115,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return entry;
     }
 
-    public int saveEntry(int year, int month, int day, String outfit, String location, String temps, String weather, String comment) {
+    public int newEntry(int year, int month, int day, String outfit, String location, String temps, String weather, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

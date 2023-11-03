@@ -37,6 +37,15 @@ public class Entry {
     }
 
     public int getID() { return id; }
+    public int getYear() { return year; }
+    public int getMonth() { return month; }
+    public int getDay() { return day; }
+    public String getOutfit() { return outfit; }
+    public String getLocation() { return location; }
+    public String getTemps() { return temps; }
+    public String getWeather() { return weather; }
+    public String getComment() { return comment; }
+
 
     public void setId(int id) {
         this.id=id;
