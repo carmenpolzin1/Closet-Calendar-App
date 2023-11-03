@@ -24,6 +24,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="left"
                 android:background="#FEFAFD"
+                android:onClick="onClickExitButton"
                 android:scaleType="centerInside"
                 android:src="@drawable/exit_icon" />
 
@@ -37,6 +38,7 @@
                     android:layout_height="35dp"
                     android:layout_gravity="right"
                     android:background="#FEFAFD"
+                    android:onClick="onClickSaveButton"
                     android:scaleType="centerInside"
                     android:src="@drawable/save_icon" />
             </FrameLayout>
@@ -76,6 +78,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
+                android:onClick="onClickOutfitImage"
                 android:src="@drawable/shirticon" />
         </FrameLayout>
 
@@ -184,7 +187,7 @@
             android:background="@drawable/notes_background">
 
             <EditText
-                android:id="@+id/notesEditView"
+                android:id="@+id/commentEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"

@@ -46,7 +46,7 @@
         app:layout_constraintStart_toStartOf="@+id/pictureTextView"
         app:layout_constraintTop_toBottomOf="@+id/pictureTextView"
         app:layout_constraintVertical_bias="0.592"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        android:src="@android:drawable/ic_menu_camera" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -87,6 +87,6 @@
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_delete" />
+        android:src="@android:drawable/ic_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
