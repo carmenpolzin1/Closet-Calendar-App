@@ -136,5 +136,69 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return newRowId;
     }
+
+    public void updateEntry(int id, int year, int month, int day, String outfit, String location, String temps, String weather, String comment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("year", year);
+        values.put("month", month);
+        values.put("day", day);
+        values.put("outfit", outfit);
+        values.put("location", location);
+        values.put("temps", temps);
+        values.put("weather", weather);
+        values.put("comment", comment);
+
+        // Specify the selection criteria
+        String selection = "id = ?";
+
+        // Arguments for the selection criteria
+        String[] selectionArgs = {String.valueOf(id)};
+
+        // Update the existing row
+        int rowsAffected = db.update("entries", values, selection, selectionArgs);
+
+        // Close the database
+        db.close();
+
+    }
+
+    public void deleteEntry(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Specify the selection criteria
+        String selection = "id = ?";
+
+        // Arguments for the selection criteria
+        String[] selectionArgs = {String.valueOf(id)};
+
+        // Delete the existing row
+        int rowsDeleted = db.delete("entries", selection, selectionArgs);
+
+        // Close the database
+        db.close();
+    }
+
+    public void updateOutfit(int draftID, String outfit) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("outfit", outfit);
+
+        // Specify the selection criteria
+        String selection = "id = ?";
+
+        // Arguments for the selection criteria
+        String[] selectionArgs = {String.valueOf(draftID)};
+
+        // Update the existing row
+        int rowsAffected = db.update("entries", values, selection, selectionArgs);
+
+        // Close the database
+        db.close();
+    }
+
 }
 
