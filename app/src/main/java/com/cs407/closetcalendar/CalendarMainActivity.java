@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
 
 public class CalendarMainActivity extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class CalendarMainActivity extends AppCompatActivity {
         setContentView(R.layout.cal_main);
 
         CalendarView calendarView = findViewById(R.id.calendarView);
+
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -72,5 +74,13 @@ public class CalendarMainActivity extends AppCompatActivity {
     public void goToCamera(View view) {
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
+    }
+
+    //Button todayButton = findViewById(R.id.todayButton);
+
+
+    public void todayClick(View view){
+        // TODO when today is clicked move the dot to the current day
+
     }
 }

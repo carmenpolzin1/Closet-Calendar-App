@@ -37,7 +37,9 @@
         android:layout_marginTop="37dp"
         android:text="today"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        android:onClick="todayClick"
+        />
 
     <Button
         android:id="@+id/addButton"
