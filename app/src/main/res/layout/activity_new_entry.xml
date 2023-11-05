@@ -103,6 +103,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="#FDF9FC"
+                android:onClick="onClickLocationImage"
                 android:src="@drawable/location_icon" />
 
             <EditText
@@ -136,6 +137,7 @@
                 android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
                 android:background="#FDF9FC"
+                android:onClick="onClickWeatherImage"
                 android:src="@drawable/weather_icon" />
 
             <TextView

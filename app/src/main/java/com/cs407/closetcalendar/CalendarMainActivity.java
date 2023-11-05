@@ -44,6 +44,9 @@ public class CalendarMainActivity extends AppCompatActivity {
 
                     SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
                     sharedPreferences.edit().putInt("viewIDKey", existingEntry.getID()).apply(); // set a key as the entry's viewID int
+                    sharedPreferences.edit().putInt("yearKey", selectedYear).apply(); // set a key as selected year
+                    sharedPreferences.edit().putInt("monthKey", selectedMonth).apply(); // set a key as selected month
+                    sharedPreferences.edit().putInt("dayKey", selectedDay).apply(); // set a key as selected day
 
                     startActivity(intent);
                 }
@@ -55,11 +58,14 @@ public class CalendarMainActivity extends AppCompatActivity {
     public void onClickAddButton(View view){
         /*TODO make sure to not make an intent if there is already an existing entry*/
 
-        // launch the NewEntryActivity (pass the Calendar's selected date values)
+        // launch the NewEntryActivity (update sharedPrefences with Calendar's selected date values)
         Intent intent = new Intent(this, NewEntryActivity.class);
-        intent.putExtra("year", selectedYear);
-        intent.putExtra("month", selectedMonth);
-        intent.putExtra("day", selectedDay);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt("yearKey", selectedYear).apply(); // set a key as selected year
+        sharedPreferences.edit().putInt("monthKey", selectedMonth).apply(); // set a key as selected month
+        sharedPreferences.edit().putInt("dayKey", selectedDay).apply(); // set a key as selected day
+
         startActivity(intent);
     }
 

@@ -29,30 +29,30 @@ public class NewEntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_entry);
 
-        //get selected date from CalendarMain upon NewEntry  (no draft ID or view ID)
-        Intent intent = getIntent();
-        year=intent.getIntExtra("year", -1);
-        month=intent.getIntExtra("month", -1);
-        day=intent.getIntExtra("day", -1);
-
-
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
-        viewID = sharedPreferences.getInt("viewIDKey", -1); // extract viewID if exist from ViewActivity, otherwise viewID defaults to -1 (NewMode)
-        draftID = sharedPreferences.getInt("draftIDKey", -1); // extract draftID if exist (EditMode), otherwise draftID defaults to -1 (NewMode)
+        viewID = sharedPreferences.getInt("viewIDKey", -1); // extract viewID if exist from ViewActivity, otherwise viewID defaults to -1
+        draftID = sharedPreferences.getInt("draftIDKey", -1); // extract draftID if exist, otherwise draftID defaults to -1
+        year=sharedPreferences.getInt("year", -1); // extract draftID (always exists), otherwise year defaults to -1
+        month=sharedPreferences.getInt("month", -1); // extract draftID (always exists), otherwise month defaults to -1
+        day=sharedPreferences.getInt("day", -1); // extract draftID (always exists), otherwise day defaults to -1
 
-
-        // display draft Entry's data  "From Closet or Camera"
+        // display draft Entry's data if from "Closet or Camera"
         if(draftID!=-1){
             //display draft entry's data
             displayEntryData(draftID);
         }
-        // display database view Entry's data (no draft edits yet) "From ViewActivity"
+        // display database view Entry's data if no draft edits yet, from "ViewActivity"
         else if (viewID!=-1) {
             //display view entry's data
             displayEntryData(viewID);
         }
-        //else the xml displays default values onCreate (no edits made so far) "From CalendarMain"
-
+        /*else the xml displays default values onCreate if from "CalendarMain"
+          (no edits so far except the date from sharedpref) */
+        else{
+            //display the selected date from Calendar Main
+            TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
+            dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
+        }
     }
 
     public void displayEntryData(int id){
@@ -82,9 +82,64 @@ public class NewEntryActivity extends AppCompatActivity {
     }
 
 
-    /*TODO add a current location button to icon*/
-    /*TODO add a current temp button to icon*/
+    public void onClickLocationImage(View view){
+        //TODO update the EditText with the gps current location (City, ST) form
+        String city="Madison";
+        String state="WI";
+        String updatedLocation=city+", "+state;
 
+        EditText locationDescEditView =findViewById(R.id.locationDescEditView);
+        locationDescEditView.setText(updatedLocation);
+    }
+
+    public void onClickWeatherImage(View view){
+
+        //TODO update the TextView with that day's temp (low|high) form
+        String low = 51 + "";
+        String high = 71 + "";
+        String updatedTemps=low+"\u00B0|"+high+"\u00B0";
+
+        TextView tempTextView =findViewById(R.id.tempTextView);
+        tempTextView.setText(updatedTemps);
+    }
+
+    public void updateClassVariablesFromLayout(){
+
+        //id from sharedpref
+        //year from sharedpref
+        //month from sharedpref
+        //day from sharedpref
+
+        //outfit from database (viewID,draftID, or no ID yet as default)
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+        //if draftID exists, take outfit from draft (newest update)
+        if(draftID!=-1){
+            Entry entry=dbHelper.getEntryById(draftID);
+            outfit=entry.getOutfit();
+        }
+        //draftID doesn't exist, but if viewID does, take outfit from viewID
+        else if(viewID!=-1){
+            Entry entry=dbHelper.getEntryById(viewID);
+            outfit=entry.getOutfit();
+        }
+        //viewID or draftID doesn't exist, keep default image
+        else{
+            //TODO outfit=default image string (or it is -1)
+        }
+
+        EditText locationDescEditView =findViewById(R.id.locationDescEditView);
+        location=locationDescEditView.getText().toString();
+
+        TextView tempTextView =findViewById(R.id.tempTextView);
+        temps=tempTextView.getText().toString();
+
+        EditText weatherDescEditView =findViewById(R.id.weatherDescEditView);
+        weather=weatherDescEditView.getText().toString();
+
+        EditText commentEditText =findViewById(R.id.commentEditText);
+        comment=commentEditText.getText().toString();
+
+    }
 
     public void onClickOutfitImage(View view){
         Intent intent = new Intent(this, ChooseClosetActivity.class);
@@ -92,33 +147,74 @@ public class NewEntryActivity extends AppCompatActivity {
         DBHelper dbHelper = new DBHelper(getApplicationContext());
 
         //save edit progress by storing/updating a draft entry to the database
-        //if a draft entry doesn't exist, make a new draft entry (NewEntry->new draftID)
-        if(draftID==-1){
+        //if a draft entry already exist, update draft entry (updateEntry->same draftID)
+        if(draftID!=-1){
 
-            //TODO update class variables based on the all ID cases before calling newEntry
+            //update class variables before calling updateEntry
+            updateClassVariablesFromLayout();
 
             //update the database with a new entry row with the values the user entered into the EditViews so far
+            dbHelper.updateEntry(draftID, year, month, day, outfit, location, temps, weather, comment);
+
+        }
+        // draft entry doesn't exist, make a new draft entry as a placeholder (NewEntry->new draftID)
+        else {
+
+            //update class variables before calling newEntry
+            updateClassVariablesFromLayout();
+
+            //create in the database a new entry row with the values the user entered into the EditViews so far
             draftID= dbHelper.newEntry(year, month, day, outfit, location, temps, weather, comment);
 
             //update shared preferences with this new draftID
             SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
             sharedPreferences.edit().putInt("draftIDKey", draftID).apply(); // set a key as the entry's draftID int
-
-        }
-        // draft entry already exists, so update draft entry (updateEntry-same draftID)
-        else {
-            //TODO update class variables based on the all ID cases before calling updateEntry
-            // TODO dbHelper.updateEntry(draftID, year, month, day, outfit, location, temps, weather, comment);
         }
 
         startActivity(intent);
     }
 
 
-    public void onClickSaveButton(View view){ //TODO whole function not finished yet
+    public void onClickSaveButton(View view){
 
-        //Determine whether (newEntry-> new database ID) o  (updateEntry ->keep same viewID)
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
 
+        //Determine whether (newEntry-> new database ID) or  (updateEntry ->keep same viewID)
+
+        //if viewID exists, then this is an Update Entry, and the draft row is deleted
+        if(viewID!=-1){
+
+            //update class variables before calling updateEntry
+            updateClassVariablesFromLayout();
+
+            //update viewID's entry with class values in layout
+            dbHelper.updateEntry(viewID, year, month, day, outfit, location, temps, weather, comment);
+
+            //delete draft entry from database if exists (was only placeholder when going to ChooseCloset)
+            if(draftID!=-1){
+                dbHelper.deleteEntry(draftID);
+            }
+
+        }
+        // viewID doesn't exist, but draftID exists so it is kept as new Entry)
+        else if(draftID!=-1){
+
+            //update class variables before calling updateEntry
+            updateClassVariablesFromLayout();
+
+            //update draft's entry with class values in layout (this is now a permanent entry)
+            dbHelper.updateEntry(draftID, year, month, day, outfit, location, temps, weather, comment);
+        }
+        //neither viewID or draftID exists
+        else{
+            //update class variables before calling newEntry
+            updateClassVariablesFromLayout();
+
+            //create new row in database of values in layout
+            int newID= dbHelper.newEntry(year, month, day, outfit, location, temps, weather, comment);
+
+            //newID is never used
+        }
 
         goToCalendarMainActivity();
 
@@ -129,7 +225,9 @@ public class NewEntryActivity extends AppCompatActivity {
 
         //do not update/save draft entry to database, instead delete draftEntry (if exists) from database
         DBHelper dbHelper = new DBHelper(getApplicationContext());
-        //TODO dbHelper.deleteEntry(draftID);
+        if(draftID!=-1){
+            dbHelper.deleteEntry(draftID);
+        }
 
         goToCalendarMainActivity();
 
@@ -143,6 +241,9 @@ public class NewEntryActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("viewIDKey").apply();
         sharedPreferences.edit().remove("draftIDKey").apply();
+        sharedPreferences.edit().remove("yearKey").apply();
+        sharedPreferences.edit().remove("monthKey").apply();
+        sharedPreferences.edit().remove("dayKey").apply();
 
         startActivity(intent);
     }

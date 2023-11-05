@@ -25,13 +25,9 @@ public class ViewEntryActivity extends AppCompatActivity {
 
         DBHelper dbHelper = new DBHelper(getApplicationContext());
 
-        // If Entry's viewID does not get passed correctly, display error text
-        if(viewID==-1){
-            TextView dateEntryTextView=findViewById(R.id.dateEntryTextView);
-            dateEntryTextView.setText("ViewID Error");
-        }
-        //otherwise display Entry's data
-        else {
+        // Display the Entry stored in ViewID (if passed correctly)
+        if(viewID!=-1){
+
             Entry entry=dbHelper.getEntryById(viewID);
 
             // update the Layout with the class variable (Entry's data)
@@ -52,7 +48,11 @@ public class ViewEntryActivity extends AppCompatActivity {
 
             EditText commentEditText =findViewById(R.id.commentEditText);
             commentEditText.setText(entry.getComment());
-
+        }
+        // Entry's viewID did not get passed correctly, display error text
+        else {
+            TextView dateEntryTextView=findViewById(R.id.dateEntryTextView);
+            dateEntryTextView.setText("ViewID Error");
         }
 
     }
@@ -63,11 +63,37 @@ public class ViewEntryActivity extends AppCompatActivity {
         // delete sharedpreferences to set back to default when going back to CalendarMain
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("viewIDKey").apply();
+        sharedPreferences.edit().remove("yearKey").apply();
+        sharedPreferences.edit().remove("monthKey").apply();
+        sharedPreferences.edit().remove("dayKey").apply();
 
         startActivity(intent);
     }
 
-    /*TODO add a deleteEntry button*/
+
+    public void onClickDeleteButton(View view){
+        // TODO add a dialog to verify deletion first
+
+
+        //delete the current ViewID's entry from the database, if viewID exists for sure
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+        if(viewID!=-1){
+            dbHelper.deleteEntry(viewID);
+        }
+
+        //go back to Calendar Main
+        Intent intent = new Intent(this, CalendarMainActivity.class);
+
+        // delete sharedpreferences to set back to default when going back to CalendarMain
+        SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove("viewIDKey").apply();
+        sharedPreferences.edit().remove("yearKey").apply();
+        sharedPreferences.edit().remove("monthKey").apply();
+        sharedPreferences.edit().remove("dayKey").apply();
+
+        startActivity(intent);
+
+    }
 
     public void onClickEditButton(View view){
 
@@ -75,7 +101,7 @@ public class ViewEntryActivity extends AppCompatActivity {
         if(viewID!=-1){
             Intent intent = new Intent(this, NewEntryActivity.class);
 
-            //viewID should still be stored in SharedPreferences under viewID
+            //viewID,year,month,and day should still be stored in SharedPreferences under viewID
 
             startActivity(intent);
         }
