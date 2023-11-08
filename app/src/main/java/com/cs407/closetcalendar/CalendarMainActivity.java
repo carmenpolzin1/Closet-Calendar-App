@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,7 +33,8 @@ public class CalendarMainActivity extends AppCompatActivity {
     private int selectedDay;
     Calendar calendar;
 
-    BottomNavigationItemView bottomNavigationItemView;
+    BottomNavigationView bottomNavigationView;
+    //BottomNavigationItemView bottomNavigationItemView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,24 +80,9 @@ public class CalendarMainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        bottomNavigationItemView = findViewById(R.id.bottomNav);
-        bottomNavigationItemView.setSelectedItemId(R.id.calendar);
-        bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationItemView.OnsetOnNavigationItemSelectedListener(){
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item){
-                int itemId = item.getItemId();
-                if(itemId == R.id.closet){
-                    Intent intent = new Intent(this, ClosetActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-                return super.onOptionsItemSelected(item);
-            }
-        });
+        }
 
-         */
-    }
+
 
     public void onClickAddButton(View view){
         /*TODO make sure to not make an intent if there is already an existing entry*/
