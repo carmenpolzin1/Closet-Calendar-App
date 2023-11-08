@@ -32,9 +32,9 @@ public class NewEntryActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
         viewID = sharedPreferences.getInt("viewIDKey", -1); // extract viewID if exist from ViewActivity, otherwise viewID defaults to -1
         draftID = sharedPreferences.getInt("draftIDKey", -1); // extract draftID if exist, otherwise draftID defaults to -1
-        year=sharedPreferences.getInt("year", -1); // extract draftID (always exists), otherwise year defaults to -1
-        month=sharedPreferences.getInt("month", -1); // extract draftID (always exists), otherwise month defaults to -1
-        day=sharedPreferences.getInt("day", -1); // extract draftID (always exists), otherwise day defaults to -1
+        year=sharedPreferences.getInt("yearKey", -1); // extract draftID (always exists), otherwise year defaults to -1
+        month=sharedPreferences.getInt("monthKey", -1); // extract draftID (always exists), otherwise month defaults to -1
+        day=sharedPreferences.getInt("dayKey", -1); // extract draftID (always exists), otherwise day defaults to -1
 
         // display draft Entry's data if from "Closet or Camera"
         if(draftID!=-1){
@@ -52,6 +52,28 @@ public class NewEntryActivity extends AppCompatActivity {
             //display the selected date from Calendar Main
             TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
             dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
+
+
+            ImageView outfitImageView =findViewById(R.id.outfitImageView);
+            //TODO change outfit image from passed string
+
+            EditText locationDescEditView =findViewById(R.id.locationDescTextView);
+            locationDescEditView.setText("");
+
+            //TODO update the TextView with that day's temp (low|high) form
+            String low = 50 + "";
+            String high = 70 + "";
+            String updatedTemps=low+"\u00B0|"+high+"\u00B0";
+
+            TextView tempTextView =findViewById(R.id.tempTextView);
+            tempTextView.setText(updatedTemps);
+
+            EditText weatherDescEditView =findViewById(R.id.weatherDescTextView);
+            weatherDescEditView.setText("");
+
+            EditText commentEditText =findViewById(R.id.commentDescTextView);
+            commentEditText.setText("");
+
         }
     }
 
@@ -67,16 +89,16 @@ public class NewEntryActivity extends AppCompatActivity {
         ImageView outfitImageView =findViewById(R.id.outfitImageView);
         //TODO change outfit image from passed string
 
-        EditText locationDescEditView =findViewById(R.id.locationDescEditView);
+        EditText locationDescEditView =findViewById(R.id.locationDescTextView);
         locationDescEditView.setText(entry.getLocation());
 
         TextView tempTextView =findViewById(R.id.tempTextView);
         tempTextView.setText(entry.getTemps());
 
-        EditText weatherDescEditView =findViewById(R.id.weatherDescEditView);
+        EditText weatherDescEditView =findViewById(R.id.weatherDescTextView);
         weatherDescEditView.setText(entry.getWeather());
 
-        EditText commentEditText =findViewById(R.id.commentEditText);
+        EditText commentEditText =findViewById(R.id.commentDescTextView);
         commentEditText.setText(entry.getComment());
 
     }
@@ -88,7 +110,7 @@ public class NewEntryActivity extends AppCompatActivity {
         String state="WI";
         String updatedLocation=city+", "+state;
 
-        EditText locationDescEditView =findViewById(R.id.locationDescEditView);
+        EditText locationDescEditView =findViewById(R.id.locationDescTextView);
         locationDescEditView.setText(updatedLocation);
     }
 
@@ -127,16 +149,16 @@ public class NewEntryActivity extends AppCompatActivity {
             //TODO outfit=default image string (or it is -1)
         }
 
-        EditText locationDescEditView =findViewById(R.id.locationDescEditView);
+        EditText locationDescEditView =findViewById(R.id.locationDescTextView);
         location=locationDescEditView.getText().toString();
 
         TextView tempTextView =findViewById(R.id.tempTextView);
         temps=tempTextView.getText().toString();
 
-        EditText weatherDescEditView =findViewById(R.id.weatherDescEditView);
+        EditText weatherDescEditView =findViewById(R.id.weatherDescTextView);
         weather=weatherDescEditView.getText().toString();
 
-        EditText commentEditText =findViewById(R.id.commentEditText);
+        EditText commentEditText =findViewById(R.id.commentDescTextView);
         comment=commentEditText.getText().toString();
 
     }

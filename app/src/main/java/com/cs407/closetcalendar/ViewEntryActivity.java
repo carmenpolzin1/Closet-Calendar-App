@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +19,8 @@ public class ViewEntryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_entry);
+
+        Log.i("info", "ViewEntryActivity onCreate");
 
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
         viewID = sharedPreferences.getInt("viewIDKey", -1); // extract viewID if exist (ViewMode), otherwise viewID defaults to -1 (Error)
@@ -37,17 +39,17 @@ public class ViewEntryActivity extends AppCompatActivity {
             ImageView outfitImageView =findViewById(R.id.outfitImageView);
             //TODO change outfit image from passed string
 
-            EditText locationDescEditView =findViewById(R.id.locationDescEditView);
-            locationDescEditView.setText(entry.getLocation());
+            TextView locationDescTextView =findViewById(R.id.locationDescTextView);
+            locationDescTextView.setText(entry.getLocation());
 
             TextView tempTextView =findViewById(R.id.tempTextView);
             tempTextView.setText(entry.getTemps());
 
-            EditText weatherDescEditView =findViewById(R.id.weatherDescEditView);
-            weatherDescEditView.setText(entry.getWeather());
+            TextView weatherDescTextView =findViewById(R.id.weatherDescTextView);
+            weatherDescTextView.setText(entry.getWeather());
 
-            EditText commentEditText =findViewById(R.id.commentEditText);
-            commentEditText.setText(entry.getComment());
+            TextView commentDescTextView =findViewById(R.id.commentDescTextView);
+            commentDescTextView.setText(entry.getComment());
         }
         // Entry's viewID did not get passed correctly, display error text
         else {
