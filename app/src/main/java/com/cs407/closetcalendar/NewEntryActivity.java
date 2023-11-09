@@ -175,7 +175,7 @@ public class NewEntryActivity extends AppCompatActivity {
 
         // update the Layout with the class variable (Entry's data)
         TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
-        dateEntryTextView.setText(entry.getMonth()+"/"+entry.getDay()+"/"+entry.getYear()+" Entry");
+        dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
 
         ImageView outfitImageView =findViewById(R.id.outfitImageView);
         //TODO change outfit image from passed string
