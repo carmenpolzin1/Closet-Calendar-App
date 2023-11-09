@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,8 @@ public class CalendarMainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     //BottomNavigationItemView bottomNavigationItemView;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +129,10 @@ public class CalendarMainActivity extends AppCompatActivity {
     }
 
     public void goToCamera(View view) {
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     //Button todayButton = findViewById(R.id.todayButton);
