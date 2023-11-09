@@ -153,12 +153,20 @@ public class NewEntryActivity extends AppCompatActivity {
 
             if(listAddresses !=null && listAddresses.size() >0){
                 Log.i("PleaceInfo", listAddresses.get(0).toString());
-                address= "Address: \n";
-                if(listAddresses.get(0).getThoroughfare()!=null){
-                    address += listAddresses.get(0).getThoroughfare()+ "\n";
-                }if(listAddresses.get(0).getLocality()!=null) {
-                    address += listAddresses.get(0).getLocality() + "\n";
+                address= " \n";
+                //if(listAddresses.get(0).getThoroughfare()!=null){
+                   // address += listAddresses.get(0).getThoroughfare()+ "\n";
+                //}
+                if(listAddresses.get(0).getLocality()!=null) { // this gets madison
+                    address += listAddresses.get(0).getLocality() + ",\n";
                 }
+                if(listAddresses.get(0).getAdminArea()!=null) { // this gets madison
+                    address += listAddresses.get(0).getAdminArea() + "\n";
+                }
+                //addresses.get(0).getAdminArea();
+                //if(listAddresses.get(0).getPostalCode()!=null) {
+                   // address += listAddresses.get(0).getPostalCode() + "\n";
+                //}
             }
             return address;
         } catch(IOException e){
