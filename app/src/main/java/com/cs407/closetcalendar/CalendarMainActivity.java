@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,8 +33,10 @@ public class CalendarMainActivity extends AppCompatActivity {
     private int selectedMonth;
     private int selectedDay;
     Calendar calendar;
+    private Entry existingEntry=null;
 
-    BottomNavigationItemView bottomNavigationItemView;
+    BottomNavigationView bottomNavigationView;
+    //BottomNavigationItemView bottomNavigationItemView;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -45,63 +48,74 @@ public class CalendarMainActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendarView);
         calendar = Calendar.getInstance();
 
+        //onCreate,  set the date to today
+        setTodayDate();
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
 
-                // TODO When a date is selected, move the highlighted bubble and update selected year, date, and month
-                //String[] dates = getDate();
-                //Log.i("info", "this is year " + year);
-                //Log.i("info", "this is month " + month);
-                //Log.i("info", "this is day " + day);
+                //must increment month by 1 since zerobased from Listener
                 selectedYear = year;
-                selectedMonth = month;
+                selectedMonth = month+1;
                 selectedDay = day;
 
-                // create instance of database
-                DBHelper dbHelper = new DBHelper(getApplicationContext());
+//                Log.i("info", "this is year " + selectedYear);
+//                Log.i("info", "this is month " + selectedMonth);
+//                Log.i("info", "this is day " + selectedDay);
 
-                // Check if there's already an entry for the selected date
-                Entry existingEntry = dbHelper.getEntryByDate(year, month, day);
-
-                if (existingEntry != null) {
-                    // launch the ViewEntryActivity if entry exists (pass the viewID)  "EditMode"
-                    Intent intent = new Intent(CalendarMainActivity.this, ViewEntryActivity.class);
-
-                    SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putInt("viewIDKey", existingEntry.getID()).apply(); // set a key as the entry's viewID int
-                    sharedPreferences.edit().putInt("yearKey", selectedYear).apply(); // set a key as selected year
-                    sharedPreferences.edit().putInt("monthKey", selectedMonth).apply(); // set a key as selected month
-                    sharedPreferences.edit().putInt("dayKey", selectedDay).apply(); // set a key as selected day
-
-                    startActivity(intent);
-                }
+                //update which button shows for this date
+                updateButtonSelection(selectedMonth,selectedDay,selectedYear);
 
             }
         });
 
-        /*
-        bottomNavigationItemView = findViewById(R.id.bottomNav);
-        bottomNavigationItemView.setSelectedItemId(R.id.calendar);
-        bottomNavigationItemView.setOnNavigationItemSelectedListener(new BottomNavigationItemView.OnsetOnNavigationItemSelectedListener(){
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item){
-                int itemId = item.getItemId();
-                if(itemId == R.id.closet){
-                    Intent intent = new Intent(this, ClosetActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-                return super.onOptionsItemSelected(item);
-            }
-        });
+        }
 
-         */
+
+
+    public void updateButtonSelection(int month, int day, int year){
+
+        // create instance of database
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+
+        // Check if there's already an entry for the selected date
+        existingEntry = dbHelper.getEntryByDate(year, month, day);
+
+        Button addButton = findViewById(R.id.addButton);
+        Button viewButton = findViewById(R.id.viewButton);
+
+        //Display the view or add button according to the selected date
+        if (existingEntry != null) {
+            // make the "+" Button disapear (can't make more than one entry on one day)
+            addButton.setVisibility(View.GONE);
+            // display the "View" Button (can only view the entry)
+            viewButton.setVisibility(View.VISIBLE);
+        } else {
+            // make the "View" Button disapear (can't view a nonexisting entry)
+            viewButton.setVisibility(View.GONE);
+            // display the "+" Button (can only add an entry)
+            addButton.setVisibility(View.VISIBLE);
+        }
     }
 
+    public void onClickViewButton(View view){
+
+        // launch the ViewEntryActivity (update sharedPrefences with Calendar's selected date values and viewID)
+        Intent intent = new Intent(this, ViewEntryActivity.class);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt("viewIDKey", existingEntry.getID()).apply(); // set a key as the entry's viewID int
+        sharedPreferences.edit().putInt("yearKey", selectedYear).apply(); // set a key as selected year
+        sharedPreferences.edit().putInt("monthKey", selectedMonth).apply(); // set a key as selected month
+        sharedPreferences.edit().putInt("dayKey", selectedDay).apply(); // set a key as selected day
+//        Log.i("info", "onClickViewButton");
+        startActivity(intent);
+    }
+
+
+
     public void onClickAddButton(View view){
-        /*TODO make sure to not make an intent if there is already an existing entry*/
 
         // launch the NewEntryActivity (update sharedPrefences with Calendar's selected date values)
         Intent intent = new Intent(this, NewEntryActivity.class);
@@ -125,24 +139,41 @@ public class CalendarMainActivity extends AppCompatActivity {
 
 
     public void todayClick(View view){
-        // TODO get the current day, month, and year
+        // set the current day, month, and year on the Calendar
+        setTodayDate();
+    }
+
+    public void setTodayDate(){
+        //set the current day, month, and year on the Calendar
         Calendar calendar2 = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         String selected_date = dateFormat.format(calendar2.getTime());
         String dates[] = selected_date.split("/");
-        //Log.i("info", "this is month " + Integer.valueOf(dates[0]));//this is month
-        //Log.i("info", "this is day " + Integer.valueOf(dates[1])); // this is day
-        //Log.i("info", "this is year " + Integer.valueOf(dates[2])); // this is year
+//        Log.i("info", "this is month " + Integer.valueOf(dates[0]));//this is month
+//        Log.i("info", "this is day " + Integer.valueOf(dates[1])); // this is day
+//        Log.i("info", "this is year " + Integer.valueOf(dates[2])); // this is year
         setDate(Integer.valueOf(dates[0]),Integer.valueOf(dates[1]),Integer.valueOf(dates[2]));
-
     }
 
     public void setDate(int month, int day, int year){
+        //set the specified date on the Calendar
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month-1);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         long milli = calendar.getTimeInMillis();
         calendarView.setDate(milli);
+
+//        Log.i("info", "this is year " + year);
+//        Log.i("info", "this is month " + month);
+//        Log.i("info", "this is day " + day);
+
+        //update class variables
+        selectedYear = year;
+        selectedMonth = month;
+        selectedDay = day;
+
+        //update which button shows for this date
+        updateButtonSelection(month,day,year);
 
     }
 
