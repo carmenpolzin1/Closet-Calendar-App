@@ -19,6 +19,7 @@ import android.widget.CalendarView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +51,28 @@ public class CalendarMainActivity extends AppCompatActivity {
 
         //onCreate,  set the date to today
         setTodayDate();
+
+        // bottom navigation
+        bottomNavigationView = findViewById(R.id.bottomNav);
+        bottomNavigationView.setSelectedItemId(R.id.calendar);
+
+        // FOR FUTURE: should use fragments for bottom nav
+        // https://www.geeksforgeeks.org/bottom-navigation-bar-in-android/
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.closet) {
+                    startActivity(new Intent(getApplicationContext(), ClosetActivity.class));
+                    return true;
+                } else if (id == R.id.calendar){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
