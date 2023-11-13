@@ -6,87 +6,107 @@
     android:layout_height="match_parent"
     tools:context=".ChooseClosetActivity">
 
-    <TextView
-        android:id="@+id/closetTitleTextView"
-        android:layout_width="367dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginBottom="2dp"
-        android:text="Choose from Closet"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/pictureTextView"
-        android:layout_width="230dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="732dp"
-        android:text="Add Outfit"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/pictureTextView"
-        app:layout_constraintHorizontal_bias="0.55"
-        app:layout_constraintStart_toStartOf="@+id/pictureTextView"
-        app:layout_constraintTop_toBottomOf="@+id/pictureTextView"
-        app:layout_constraintVertical_bias="0.592"
-        android:src="@android:drawable/ic_menu_camera" />
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="84dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/xButton">
-
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TableRow
+            <ImageButton
+                android:id="@+id/exitButtonChoose"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="left"
+                android:background="#FEFAFD"
+                android:onClick="onClickExitButtonChoose"
+                android:scaleType="centerInside"
+                android:src="@drawable/exit_icon" />
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/shirticon" />
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+                <ImageButton
+                    android:id="@+id/saveButtonChoose"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="right"
+                    android:background="#FEFAFD"
+                    android:onClick="onClickSaveButtonChoose"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/save_icon" />
+            </FrameLayout>
+        </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/xButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@android:drawable/ic_delete" />
+        <TextView
+            android:id="@+id/closetTitleTextViewChoose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center_horizontal"
+            android:text="Choose Outfit"
+            android:textSize="40sp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginVertical="20dp"
+            android:background="@color/material_dynamic_neutral80">
+
+            <ImageView
+                android:id="@+id/outfitImageViewChoose"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@drawable/shirticon" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/albumButtonChoose"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="#FEFAFD"
+            android:onClick="onClickAlbumButtonChoose"
+            android:scaleType="centerInside"
+            android:src="@drawable/album_icon" />
+
+        <TextView
+            android:id="@+id/albumTextViewChoose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:text="Choose from\nCamera Roll"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/cameraButtonChoose"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="#FEFAFD"
+            android:onClick="onClickCameraButtonChoose"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera_icon" />
+
+        <TextView
+            android:id="@+id/cameraTextViewChoose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Take a Picture"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
