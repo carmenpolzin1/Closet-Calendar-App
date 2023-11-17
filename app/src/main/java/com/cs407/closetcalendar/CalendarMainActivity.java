@@ -36,7 +36,7 @@ public class CalendarMainActivity extends AppCompatActivity {
     Calendar calendar;
     private Entry existingEntry=null;
 
-    BottomNavigationView bottomNavigationView;
+    //BottomNavigationView bottomNavigationView;
     //BottomNavigationItemView bottomNavigationItemView;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -92,6 +92,22 @@ public class CalendarMainActivity extends AppCompatActivity {
 
             }
         });
+
+        /*
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if(itemId== R.id.calendar){
+                    return true;
+                }
+                else{
+                    goToCalendar();
+                    return true;
+                }
+            }
+        });
+        */
 
         }
 
@@ -164,6 +180,11 @@ public class CalendarMainActivity extends AppCompatActivity {
     public void todayClick(View view){
         // set the current day, month, and year on the Calendar
         setTodayDate();
+    }
+
+    public void goToCalendar(){
+        Intent intent = new Intent(this, ClosetActivity.class);
+        startActivity(intent);
     }
 
     public void setTodayDate(){
