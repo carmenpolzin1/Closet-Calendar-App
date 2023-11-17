@@ -36,7 +36,7 @@ public class CalendarMainActivity extends AppCompatActivity {
     Calendar calendar;
     private Entry existingEntry=null;
 
-    //BottomNavigationView bottomNavigationView;
+    BottomNavigationView bottomNavigationView;
     //BottomNavigationItemView bottomNavigationItemView;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
