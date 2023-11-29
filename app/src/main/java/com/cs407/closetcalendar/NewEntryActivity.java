@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.util.List;
@@ -106,7 +109,8 @@ public class NewEntryActivity extends AppCompatActivity {
 
 
             ImageView outfitImageView =findViewById(R.id.outfitImageView);
-            //TODO change outfit image from passed string
+            Uri outfitUri = Uri.parse(outfit);
+            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
 
             EditText locationDescEditView =findViewById(R.id.locationDescTextView);
             locationDescEditView.setText("");

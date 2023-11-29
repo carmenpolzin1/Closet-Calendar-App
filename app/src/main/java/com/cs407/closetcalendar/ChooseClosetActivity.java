@@ -1,17 +1,44 @@
 package com.cs407.closetcalendar;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+
+import com.bumptech.glide.Glide;
 
 public class ChooseClosetActivity extends AppCompatActivity {
 
     private int draftID=-1;
     private String outfit=null;
+
+    private ImageView imageView; // ImageView for the outfit
+    private Uri pickedImageUri; // Uri of the image of the outfit chosen
+
+    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                // Callback is invoked after the user selects a media item or closes the photo picker.
+                if (uri != null) {
+                    Log.d("PhotoPicker", "Selected URI: " + uri);
+                    Glide.with(getApplicationContext()).load(uri).into(imageView);
+                    this.pickedImageUri = uri;
+                    this.outfit = uri.toString();
+                    //handleAlbumButtonChoose(uri);
+                } else {
+                    Log.d("PhotoPicker", "No outfit selected");
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +48,20 @@ public class ChooseClosetActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("<com.cs407.closetcalendar>", Context.MODE_PRIVATE);
         draftID = sharedPreferences.getInt("draftIDKey", -1); // extract draftID (should exist)
 
+        imageView = findViewById(R.id.outfitImageViewChoose);
     }
 
+
+    /**
+     * Launches the Android Photo Picker where the user can select 1 photo to be uploaded.
+     *
+     * @param view
+     */
     public void onClickAlbumButtonChoose(View view){
-        //TODO inflate the photo picker
+        Log.i("info", "choose album button clicked!");
+        pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     public void onClickCameraButtonChoose(View view){

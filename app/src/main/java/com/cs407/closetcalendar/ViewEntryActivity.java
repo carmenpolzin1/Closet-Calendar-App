@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class ViewEntryActivity extends AppCompatActivity {
 
@@ -37,7 +40,8 @@ public class ViewEntryActivity extends AppCompatActivity {
             dateEntryTextView.setText(entry.getMonth()+"/"+entry.getDay()+"/"+entry.getYear()+" Entry");
 
             ImageView outfitImageView =findViewById(R.id.outfitImageView);
-            //TODO change outfit image from passed string
+            Uri outfitUri = Uri.parse(entry.getOutfit());
+            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
 
             TextView locationDescTextView =findViewById(R.id.locationDescTextView);
             locationDescTextView.setText(entry.getLocation());

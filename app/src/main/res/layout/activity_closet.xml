@@ -6,14 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ClosetActivity">
 
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/pictureTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/closetTitleTextView">
+
+        <TableLayout
+            android:id="@+id/imageTableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/sampleImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/shirticon" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
     <ImageButton
         android:id="@+id/cameraButton"
-        android:layout_width="71dp"
+        android:layout_width="0dp"
         android:layout_height="65dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="addFromCameraRoll"
         android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/deleteButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/camRollButton"
         app:layout_constraintStart_toStartOf="@+id/deleteButton"
         app:layout_constraintTop_toBottomOf="@+id/deleteButton"
         app:layout_constraintVertical_bias="0.932" />
@@ -21,22 +53,24 @@
     <TextView
         android:id="@+id/closetTitleTextView"
         android:layout_width="0dp"
-        android:layout_height="45dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="184dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="612dp"
         android:text="Closet"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintBottom_toTopOf="@+id/camRollButton"
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pictureTextView"
-        android:layout_width="193dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="756dp"
+        android:layout_width="112dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="676dp"
+        android:layout_marginEnd="8dp"
         android:text="Add Picture"
         android:textAlignment="viewEnd"
         android:textSize="20sp"
@@ -56,35 +90,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="83dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/closetTitleTextView">
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/shirticon" />
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="408dp"
@@ -101,5 +106,18 @@
 
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <Button
+        android:id="@+id/camRollButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="98dp"
+        android:text="Add From Camera Roll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cameraButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/closetTitleTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
