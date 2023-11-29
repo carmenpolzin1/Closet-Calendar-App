@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 
 import com.bumptech.glide.Glide;
 
@@ -34,7 +32,6 @@ public class ChooseClosetActivity extends AppCompatActivity {
                     Glide.with(getApplicationContext()).load(uri).into(imageView);
                     this.pickedImageUri = uri;
                     this.outfit = uri.toString();
-                    //handleAlbumButtonChoose(uri);
                 } else {
                     Log.d("PhotoPicker", "No outfit selected");
                 }
@@ -58,7 +55,6 @@ public class ChooseClosetActivity extends AppCompatActivity {
      * @param view
      */
     public void onClickAlbumButtonChoose(View view){
-        Log.i("info", "choose album button clicked!");
         pickMedia.launch(new PickVisualMediaRequest.Builder()
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                 .build());

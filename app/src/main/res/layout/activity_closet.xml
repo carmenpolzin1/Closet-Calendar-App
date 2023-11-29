@@ -31,6 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/shirticon" />
+
             </TableRow>
         </TableLayout>
     </ScrollView>
@@ -119,5 +120,18 @@
         app:layout_constraintEnd_toStartOf="@+id/cameraButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/closetTitleTextView" />
+
+    <ImageButton
+        android:id="@+id/closetDeleteButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.92"
+        app:layout_constraintStart_toEndOf="@+id/closetTitleTextView"
+        app:srcCompat="@drawable/delete_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
