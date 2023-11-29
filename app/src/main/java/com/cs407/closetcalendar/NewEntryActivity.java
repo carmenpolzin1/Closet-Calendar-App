@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -121,6 +123,10 @@ public class NewEntryActivity extends AppCompatActivity {
             //display the selected date from Calendar Main
             TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
             dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
+
+            ImageView outfitImageView =findViewById(R.id.outfitImageView);
+            Uri outfitUri = Uri.parse(outfit);
+            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
 
             EditText locationDescEditView =findViewById(R.id.locationDescTextView);
             locationDescEditView.setText("");
