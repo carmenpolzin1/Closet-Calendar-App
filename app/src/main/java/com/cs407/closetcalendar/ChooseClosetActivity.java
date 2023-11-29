@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 public class ChooseClosetActivity extends AppCompatActivity {
 
     private int draftID=-1;
     private String outfit=null;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,10 @@ public class ChooseClosetActivity extends AppCompatActivity {
 
     public void onClickCameraButtonChoose(View view){
         //TODO open the camera activity, and save capture to outfit string
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
         //outfit=camera capture pathway
     }
 
