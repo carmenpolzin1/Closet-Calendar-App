@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,6 +21,7 @@ public class ChooseClosetActivity extends AppCompatActivity {
 
     private int draftID=-1;
     private String outfit=null;
+
 
     private ImageView imageView; // ImageView for the outfit
     private Uri pickedImageUri; // Uri of the image of the outfit chosen
@@ -36,6 +38,7 @@ public class ChooseClosetActivity extends AppCompatActivity {
                     Log.d("PhotoPicker", "No outfit selected");
                 }
             });
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,10 @@ public class ChooseClosetActivity extends AppCompatActivity {
 
     public void onClickCameraButtonChoose(View view){
         //TODO open the camera activity, and save capture to outfit string
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
         //outfit=camera capture pathway
     }
 
