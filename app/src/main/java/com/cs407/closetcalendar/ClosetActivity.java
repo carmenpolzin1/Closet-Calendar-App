@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+
 public class ClosetActivity extends AppCompatActivity {
     private DBHelper dbHelper;
 
