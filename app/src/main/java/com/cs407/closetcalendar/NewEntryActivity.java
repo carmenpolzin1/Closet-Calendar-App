@@ -107,11 +107,6 @@ public class NewEntryActivity extends AppCompatActivity {
             TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
             dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
 
-
-            ImageView outfitImageView =findViewById(R.id.outfitImageView);
-            Uri outfitUri = Uri.parse(outfit);
-            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
-
             EditText locationDescEditView =findViewById(R.id.locationDescTextView);
             locationDescEditView.setText("");
 
@@ -190,7 +185,8 @@ public class NewEntryActivity extends AppCompatActivity {
         dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
 
         ImageView outfitImageView =findViewById(R.id.outfitImageView);
-        //TODO change outfit image from passed string
+        Uri outfitUri = Uri.parse(entry.getOutfit());
+        Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
 
         EditText locationDescEditView =findViewById(R.id.locationDescTextView);
         locationDescEditView.setText(entry.getLocation());
