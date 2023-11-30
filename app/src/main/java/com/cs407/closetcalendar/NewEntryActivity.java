@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,10 +26,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class NewEntryActivity extends AppCompatActivity {
     LocationManager locationManager;
@@ -41,6 +53,9 @@ public class NewEntryActivity extends AppCompatActivity {
     private int day=-1;
     private String outfit=null;
     private String locationString=null;
+    private String weatherString=null;
+    private double latDouble=-1;
+    private double longDouble=-1;
     private String temps=null;
     private String weather=null;
     private String comment=null;
@@ -79,6 +94,8 @@ public class NewEntryActivity extends AppCompatActivity {
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if(location!=null){
                     locationString = updateLocationInfo(location);
+                    latDouble=location.getLatitude();
+                    longDouble=location.getLongitude();
                 }
             }
         }
@@ -110,9 +127,8 @@ public class NewEntryActivity extends AppCompatActivity {
             EditText locationDescEditView =findViewById(R.id.locationDescTextView);
             locationDescEditView.setText("");
 
-            //TODO update the TextView with that day's temp (low|high) form
-            String low = 50 + "";
-            String high = 70 + "";
+            String low = "low";
+            String high = "high";
             String updatedTemps=low+"\u00B0|"+high+"\u00B0";
 
             TextView tempTextView =findViewById(R.id.tempTextView);
@@ -151,16 +167,16 @@ public class NewEntryActivity extends AppCompatActivity {
             List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(), 1);
 
             if(listAddresses !=null && listAddresses.size() >0){
-                Log.i("PleaceInfo", listAddresses.get(0).toString());
-                address= " \n";
+                Log.i("PlaceInfo", listAddresses.get(0).toString());
+                address= "";
                 //if(listAddresses.get(0).getThoroughfare()!=null){
                    // address += listAddresses.get(0).getThoroughfare()+ "\n";
                 //}
                 if(listAddresses.get(0).getLocality()!=null) { // this gets madison
-                    address += listAddresses.get(0).getLocality() + ",\n";
+                    address += listAddresses.get(0).getLocality() + ", ";
                 }
-                if(listAddresses.get(0).getAdminArea()!=null) { // this gets madison
-                    address += listAddresses.get(0).getAdminArea() + "\n";
+                if(listAddresses.get(0).getAdminArea()!=null) { // this gets Wisconsin
+                    address += listAddresses.get(0).getAdminArea() + "";
                 }
                 //addresses.get(0).getAdminArea();
                 //if(listAddresses.get(0).getPostalCode()!=null) {
@@ -204,7 +220,7 @@ public class NewEntryActivity extends AppCompatActivity {
 
 
     public void onClickLocationImage(View view){
-        //TODO update the EditText with the gps current location (City, ST) form
+        //update the EditText with the gps current location (City, State) form
        // String city="Madison";
         //String state="WI";
         //String updatedLocation=city+", "+state;
@@ -216,13 +232,109 @@ public class NewEntryActivity extends AppCompatActivity {
 
     public void onClickWeatherImage(View view){
 
-        //TODO update the TextView with that day's temp (low|high) form
-        String low = 51 + "";
-        String high = 71 + "";
-        String updatedTemps=low+"\u00B0|"+high+"\u00B0";
+        //update the TextView with that day's temp (low|high) form
+
+        Log.i("LatInfo", latDouble +"");
+        Log.i("LongInfo", longDouble +"");
+
+        new WeatherTask().execute(); //updates weatherString
+
+        String updatedTemps=weatherString;
 
         TextView tempTextView =findViewById(R.id.tempTextView);
         tempTextView.setText(updatedTemps);
+    }
+
+    private class WeatherTask extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            // Perform your network request here and return the JSON response
+            String apiKey = "c3f9db73466c72c2f80fc3aa9bd4cea5"; //Caitlin's API
+            String apiUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + latDouble +
+                    "&lon=" + longDouble + "&appid=" + apiKey;
+
+            RequestQueue queue = Volley.newRequestQueue(NewEntryActivity.this);
+
+            try {
+                RequestFuture<JSONObject> future = RequestFuture.newFuture();
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, apiUrl, null, future, future);
+                queue.add(request);
+
+                return future.get();  // This blocks until the request is complete
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject response) {
+            // Update UI with the response
+            if (response != null) {
+                try {
+                    JSONObject main = response.getJSONObject("main");
+                    double tempKelvin = main.getDouble("temp");
+                    double tempMinKelvin = main.getDouble("temp_min");
+                    double tempMaxKelvin = main.getDouble("temp_max");
+
+                    // Convert temperatures to Fahrenheit
+                    int tempFahrenheit = (int) ((tempKelvin - 273.15) * 9 / 5 + 32);
+                    int tempMinFahrenheit = (int) ((tempMinKelvin - 273.15) * 9 / 5 + 32);
+                    int tempMaxFahrenheit = (int) ((tempMaxKelvin - 273.15) * 9 / 5 + 32);
+
+                    weatherString = tempMinFahrenheit+"\u00B0|"+tempMaxFahrenheit+"\u00B0";
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    private String getWeatherData() {
+        String apiKey = "c3f9db73466c72c2f80fc3aa9bd4cea5"; //Caitlin's API
+        String apiUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + latDouble +
+                "&lon=" + longDouble + "&appid=" + apiKey;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, apiUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject main = response.getJSONObject("main");
+                            double tempKelvin = main.getDouble("temp");
+                            double tempMinKelvin = main.getDouble("temp_min");
+                            double tempMaxKelvin = main.getDouble("temp_max");
+
+                            // Convert temperatures to Fahrenheit
+                            int tempFahrenheit = (int) ((tempKelvin - 273.15) * 9 / 5 + 32);
+                            int tempMinFahrenheit = (int) ((tempMinKelvin - 273.15) * 9 / 5 + 32);
+                            int tempMaxFahrenheit = (int) ((tempMaxKelvin - 273.15) * 9 / 5 + 32);
+
+
+                            weatherString = tempMinFahrenheit+"\u00B0|"+tempMaxFahrenheit+"\u00B0";
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        error.printStackTrace();
+                    }
+                }
+        );
+
+        queue.add(jsonObjectRequest);
+        return weatherString;
     }
 
     public void updateClassVariablesFromLayout(){
