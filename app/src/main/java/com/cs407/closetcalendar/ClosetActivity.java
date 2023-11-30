@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
 
 
 public class ClosetActivity extends AppCompatActivity {
@@ -128,7 +127,6 @@ public class ClosetActivity extends AppCompatActivity {
         // TODO Parse through database and load outfit images in closet
         // need to dynamically create ImageView for each outfit
         /**
-        // Assuming you have an ImageView in your layout
         ImageView imageView = findViewById(R.id.imageView);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -139,8 +137,7 @@ public class ClosetActivity extends AppCompatActivity {
                 // Load and display the image using a library like Glide
                 Glide.with(this).load(imagePath).into(imageView);
 
-                // You may need to handle multiple images in your gallery
-                // For simplicity, this example uses a single ImageView
+                // handle multiple images in your gallery
             } while (cursor.moveToNext());
 
             cursor.close();
