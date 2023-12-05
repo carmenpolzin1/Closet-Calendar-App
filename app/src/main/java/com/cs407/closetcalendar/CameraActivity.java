@@ -19,8 +19,14 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -28,12 +34,17 @@ import android.widget.Toast;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class CameraActivity extends AppCompatActivity {
+
+    // reference: https://www.youtube.com/watch?v=L482ZAno-fY&t=302s
+
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     Button takePicButton;
     PreviewView previewView;
@@ -43,14 +54,14 @@ public class CameraActivity extends AppCompatActivity {
 
     static final int REQUEST_CAMERA_PERMISSION = 1001;
 
-    private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
-        @Override
-        public void onActivityResult(Boolean result) {
-            if (result) {
-                startCameraX(cameraFacing);
-            }
-        }
-    });
+//    private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
+//        @Override
+//        public void onActivityResult(Boolean result) {
+//            if (result) {
+//                startCameraX(cameraFacing);
+//            }
+//        }
+//    });
 
 
     @Override
@@ -58,75 +69,124 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        takePicButton = findViewById(R.id.take_pic_button);
-        previewView = findViewById(R.id.viewFinder);
-
-
+        // check permissions
         if (ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION); // permission at runtime
-            activityResultLauncher.launch(Manifest.permission.CAMERA);
+//            activityResultLauncher.launch(Manifest.permission.CAMERA);
         } else {
             startCameraX(cameraFacing);
         }
+
+        takePicButton = findViewById(R.id.take_pic_button);
+        previewView = findViewById(R.id.viewFinder);
+
+        takePicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePicture();
+            }
+        });
     }
 
     public void startCameraX(int cameraFacing) {
         int aspectRatio = aspectRatio(previewView.getWidth(), previewView.getHeight());
-        ListenableFuture listenableFuture = ProcessCameraProvider.getInstance(this);
+        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
-        listenableFuture.addListener(() -> {
+        cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = (ProcessCameraProvider) listenableFuture.get();
+                ProcessCameraProvider cameraProvider = (ProcessCameraProvider) cameraProviderFuture.get();
+
+                //bind preview
                 Preview preview = new Preview.Builder().setTargetAspectRatio(aspectRatio).build();
+
+                CameraSelector cameraSelector = new CameraSelector.Builder()
+                        .requireLensFacing(cameraFacing).build();
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 imageCapture = new ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                         .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
 
-                CameraSelector cameraSelector = new CameraSelector.Builder()
-                        .requireLensFacing(cameraFacing).build();
-
-                cameraProvider.unbindAll();
+//                cameraProvider.unbindAll();
 
                 Camera camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
-                takePicButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        takePicture(imageCapture);
-                    }
-                });
+
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(this));
     }
 
-    public void takePicture(ImageCapture imageCapture) {
-        final File file = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
-        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
-        imageCapture.takePicture(outputFileOptions, Executors.newCachedThreadPool(), new ImageCapture.OnImageSavedCallback() {
+    public void takePicture() {
+        Log.d("Camera", "Take picture called");
+
+        // Get a stable reference of the modifiable image capture use case
+        if (imageCapture == null) {
+            return;
+        }
+
+        File photoDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
+
+        if (!photoDir.exists()) {
+            if (!photoDir.mkdirs()) {
+                Log.e("CameraX", "Failed to create directory: " + photoDir.getAbsolutePath());
+                return;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis());
+        String fileName = "IMG_" + timeStamp + ".jpg";
+
+        File photoFile = new File(photoDir, fileName);
+
+        ImageCapture.OutputFileOptions outputFileOptions =
+                new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+
+        imageCapture.takePicture(outputFileOptions, Executors.newSingleThreadExecutor(), new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(CameraActivity.this, "Image saved at: " + file.getPath(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                startCameraX(cameraFacing);
+                Uri savedUri = outputFileResults.getSavedUri();
+                if (savedUri != null) {
+                    String msg = "Photo capture succeeded: " + savedUri.toString();
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    Log.d("CameraXSample", msg);
+                }
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(CameraActivity.this, "Failed to save at: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                startCameraX(cameraFacing);
+                Log.e("CameraXSample", "Error capturing image: " + exception.getMessage(), exception);
+                Toast.makeText(CameraActivity.this, "Error capturing image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+//    public void takePicture(ImageCapture imageCapture) {
+//        final File file = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
+//        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(file).build();
+//        imageCapture.takePicture(outputFileOptions, Executors.newSingleThreadExecutor(), new ImageCapture.OnImageSavedCallback() {
+//            @Override
+//            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(CameraActivity.this, "Image saved at: " + file.getPath(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//                startCameraX(cameraFacing);
+//            }
+//
+//            @Override
+//            public void onError(@NonNull ImageCaptureException exception) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(CameraActivity.this, "Failed to save at: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//                startCameraX(cameraFacing);
+//            }
+//        });
+//    }
 
     private int aspectRatio(int width, int height) {
         double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
