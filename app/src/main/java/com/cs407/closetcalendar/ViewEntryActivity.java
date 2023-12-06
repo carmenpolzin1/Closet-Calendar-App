@@ -39,9 +39,17 @@ public class ViewEntryActivity extends AppCompatActivity {
             TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
             dateEntryTextView.setText(entry.getMonth()+"/"+entry.getDay()+"/"+entry.getYear()+" Entry");
 
-            ImageView outfitImageView =findViewById(R.id.outfitImageView);
-            Uri outfitUri = Uri.parse(entry.getOutfit());
-            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
+            //Check whether the image is default or not
+            if(entry.getOutfit()!=null){
+                //if not default, update via glide
+                ImageView outfitImageView =findViewById(R.id.outfitImageView);
+                Uri outfitUri = Uri.parse(entry.getOutfit());
+                Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
+            } else {
+                // image is default (null), so update to shirticon
+                ImageView outfitImageView =findViewById(R.id.outfitImageView);
+                outfitImageView.setImageResource(R.drawable.shirticon);
+            }
 
             TextView locationDescTextView =findViewById(R.id.locationDescTextView);
             locationDescTextView.setText(entry.getLocation());
