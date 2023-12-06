@@ -140,6 +140,9 @@ public class NewEntryActivity extends AppCompatActivity {
             EditText commentEditText =findViewById(R.id.commentDescTextView);
             commentEditText.setText("");
 
+            ImageView outfitImageView =findViewById(R.id.outfitImageView);
+            outfitImageView.setImageResource(R.drawable.shirticon);
+
         }
     }
 
@@ -200,9 +203,17 @@ public class NewEntryActivity extends AppCompatActivity {
         TextView dateEntryTextView =findViewById(R.id.dateEntryTextView);
         dateEntryTextView.setText(month+"/"+day+"/"+year+" Entry");
 
-        ImageView outfitImageView =findViewById(R.id.outfitImageView);
-        Uri outfitUri = Uri.parse(entry.getOutfit());
-        Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
+        //Check whether the image is default or not
+        if(entry.getOutfit()!=null){
+            //if not default, update via glide
+            ImageView outfitImageView =findViewById(R.id.outfitImageView);
+            Uri outfitUri = Uri.parse(entry.getOutfit());
+            Glide.with(getApplicationContext()).load(outfitUri).into(outfitImageView);
+        } else {
+            // image is default (null), so update to shirticon
+            ImageView outfitImageView =findViewById(R.id.outfitImageView);
+            outfitImageView.setImageResource(R.drawable.shirticon);
+        }
 
         EditText locationDescEditView =findViewById(R.id.locationDescTextView);
         locationDescEditView.setText(entry.getLocation());
@@ -356,9 +367,9 @@ public class NewEntryActivity extends AppCompatActivity {
             Entry entry=dbHelper.getEntryById(viewID);
             outfit=entry.getOutfit();
         }
-        //viewID or draftID doesn't exist, keep default image
+        //viewID or draftID doesn't exist, keep default image (null)
         else{
-            //TODO outfit=default image string (or it is -1)
+            outfit=null;
         }
 
         EditText locationDescEditView =findViewById(R.id.locationDescTextView);
