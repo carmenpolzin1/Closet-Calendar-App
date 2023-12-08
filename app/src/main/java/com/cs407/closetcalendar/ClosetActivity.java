@@ -38,6 +38,7 @@ public class ClosetActivity extends AppCompatActivity {
     private TableLayout imageContainer;
     private TableRow currentRow;
 
+
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 // Callback is invoked after the user selects a media item or closes the photo picker.
