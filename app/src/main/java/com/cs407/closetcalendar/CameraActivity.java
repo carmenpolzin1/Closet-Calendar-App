@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +54,7 @@ public class CameraActivity extends AppCompatActivity {
     int cameraFacing = CameraSelector.LENS_FACING_BACK;
 
     static final int REQUEST_CAMERA_PERMISSION = 1001;
+    public static final String EXTRA_IMAGE_PATH = "extra_image_path";
 
 //    private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), new ActivityResultCallback<Boolean>() {
 //        @Override
@@ -124,6 +126,7 @@ public class CameraActivity extends AppCompatActivity {
             return;
         }
 
+        // check to see if path exists
         File photoDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
 
         if (!photoDir.exists()) {
@@ -136,6 +139,7 @@ public class CameraActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(System.currentTimeMillis());
         String fileName = "IMG_" + timeStamp + ".jpg";
 
+        // creates file
         File photoFile = new File(photoDir, fileName);
 
         ImageCapture.OutputFileOptions outputFileOptions =
@@ -148,17 +152,34 @@ public class CameraActivity extends AppCompatActivity {
                 if (savedUri != null) {
                     String msg = "Photo capture succeeded: " + savedUri.toString();
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                    Log.d("CameraXSample", msg);
+                    Log.d("CameraX", msg);
                 }
+
+                // Pass the image file path as a result to load into imageview
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(EXTRA_IMAGE_PATH, photoFile.getAbsolutePath());
+                setResult(RESULT_OK, resultIntent);
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
-                Log.e("CameraXSample", "Error capturing image: " + exception.getMessage(), exception);
+                Log.e("CameraX", "Error capturing image: " + exception.getMessage(), exception);
                 Toast.makeText(CameraActivity.this, "Error capturing image: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private int aspectRatio(int width, int height) {
+        double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
+        if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
+            return AspectRatio.RATIO_4_3;
+        } else {
+            return AspectRatio.RATIO_16_9;
+        }
+    }
+
+}
+
 
 //    public void takePicture(ImageCapture imageCapture) {
 //        final File file = new File(getExternalFilesDir(null), System.currentTimeMillis() + ".jpg");
@@ -188,16 +209,6 @@ public class CameraActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private int aspectRatio(int width, int height) {
-        double previewRatio = (double) Math.max(width, height) / Math.min(width, height);
-        if (Math.abs(previewRatio - 4.0 / 3.0) <= Math.abs(previewRatio - 16.0 / 9.0)) {
-            return AspectRatio.RATIO_4_3;
-        } else {
-            return AspectRatio.RATIO_16_9;
-        }
-    }
-
-}
 
     // first implementation
 //    https://www.youtube.com/watch?v=IrwhjDtpIU0
