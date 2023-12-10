@@ -52,7 +52,18 @@ public class ChooseClosetActivity extends AppCompatActivity {
 
     private ImageView imageView; // ImageView for the outfit
     private Uri pickedImageUri; // Uri of the image of the outfit chosen
-    private ActivityResultLauncher<Intent> cameraLauncher;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
+
+    private ImageButton cameraButton; // button to open camera
+
+    // ActivityResultLauncher for handling camera result
+    private final ActivityResultLauncher<Void> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.TakePicturePreview(), result -> {
+                if (result != null) {
+                    imageView.setImageBitmap(result);
+                }
+            }
+    );
 
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -77,23 +88,22 @@ public class ChooseClosetActivity extends AppCompatActivity {
         draftID = sharedPreferences.getInt("draftIDKey", -1); // extract draftID (should exist)
 
         imageView = findViewById(R.id.outfitImageViewChoose);
+        cameraButton = findViewById(R.id.cameraButtonChoose);
 
-        // instantiate camera launcher
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        // Retrieve the file path from the result
-                        Intent data = result.getData();
-                        if (data != null) {
-                            String imagePath = data.getStringExtra(CameraActivity.EXTRA_IMAGE_PATH);
-
-                            // Load the captured image into the ImageView
-                            loadCapturedImage(imagePath);
-                        }
-                    }
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(ChooseClosetActivity.this,
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                } else {
+                    ActivityCompat.requestPermissions(ChooseClosetActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            CAMERA_PERMISSION_REQUEST_CODE);
                 }
-        );
+            }
+        });
+
     }
 
 
@@ -140,14 +150,18 @@ public class ChooseClosetActivity extends AppCompatActivity {
 
     // camera functionality
     public void openCamera() {
-        Intent intent = new Intent(this, CameraActivity.class);
-        cameraLauncher.launch(intent);
+        // Using the new cameraLauncher to start the camera activity
+        cameraLauncher.launch(null);
     }
 
-    private void loadCapturedImage(String imagePath) {
-        // Load the saved image into ImageView
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-        ImageView imageView = findViewById(R.id.outfitImageViewChoose);
-        imageView.setImageBitmap(bitmap);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            }
+        }
     }
 }
