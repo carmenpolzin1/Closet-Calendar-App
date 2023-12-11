@@ -6,39 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".ClosetActivity">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
+    <LinearLayout
+        android:id="@+id/galleryLinearLayout"
+        android:layout_width="409dp"
+        android:layout_height="731dp"
+        android:layout_gravity="top"
+        android:gravity="top"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/closetTitleTextView">
-
-        <TableLayout
-            android:id="@+id/imageTableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </TableLayout>
-    </ScrollView>
-
-    <TextView
-        android:id="@+id/closetTitleTextView"
-        android:layout_width="143dp"
-        android:layout_height="43dp"
-        android:layout_marginBottom="612dp"
-        android:text="Closet"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.108" />
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/closetTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Closet"
+            android:textSize="48sp" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="82dp"
+            android:layout_gravity="top"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            android:layout_weight="1">
+
+            <TableLayout
+                android:id="@+id/imageTableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
@@ -52,9 +53,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_menu">
-
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        app:menu="@menu/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

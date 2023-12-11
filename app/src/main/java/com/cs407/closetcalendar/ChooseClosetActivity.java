@@ -67,19 +67,18 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
     );
 
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // Callback is invoked after the user selects a media item or closes the photo picker.
-                if (uri != null) {
-                    Log.d("PhotoPicker", "Selected URI: " + uri);
-                    Glide.with(getApplicationContext()).load(uri).into(imageView);
-                    this.pickedImageUri = uri;
-                    this.outfit = uri.toString();
-                } else {
-                    Log.d("PhotoPicker", "No outfit selected");
-                }
-            });
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+//    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+//            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+//                // Callback is invoked after the user selects a media item or closes the photo picker.
+//                if (uri != null) {
+//                    Log.d("PhotoPicker", "Selected URI: " + uri);
+//                    Glide.with(getApplicationContext()).load(uri).into(imageView);
+//                    this.pickedImageUri = uri;
+//                    this.outfit = uri.toString();
+//                } else {
+//                    Log.d("PhotoPicker", "No outfit selected");
+//                }
+//            });
 
     private ImageButton albumButton;
     private ActivityResultLauncher<Intent> photoPickerLauncher =
@@ -128,11 +127,14 @@ public class ChooseClosetActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Lets user choose image from the file directory
+     */
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*"); // Specify the type of files you want to pick, in this case, images
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         // Set the initial directory
         File initialDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
@@ -148,11 +150,11 @@ public class ChooseClosetActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void onClickAlbumButtonChoose(View view){
-        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
-    }
+//    public void onClickAlbumButtonChoose(View view){
+//        pickMedia.launch(new PickVisualMediaRequest.Builder()
+//                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+//                .build());
+//    }
 
 //    public void onClickCameraButtonChoose(View view){
 //        //TODO open the camera activity, and save capture to outfit string

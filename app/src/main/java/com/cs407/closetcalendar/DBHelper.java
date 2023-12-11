@@ -200,5 +200,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public Cursor getOutfitCursor() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = {"outfit"};
+
+        // retrieving all rows in the "outfit" column
+        return db.query("entries", columns, null, null, null, null, null);
+    }
+
 }
 
