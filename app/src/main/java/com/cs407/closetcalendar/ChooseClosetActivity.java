@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -55,6 +56,7 @@ public class ChooseClosetActivity extends AppCompatActivity {
     private ImageView imageView; // ImageView for the outfit
     private Uri pickedImageUri; // Uri of the image of the outfit chosen
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
+    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 101;
 
     private ImageButton cameraButton; // button to open camera
 
@@ -62,7 +64,10 @@ public class ChooseClosetActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Void> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicturePreview(), result -> {
                 if (result != null) {
+                    Log.d("Camera", result.toString());
                     imageView.setImageBitmap(result);
+                    outfit = getImageUri(getApplicationContext(), result).toString();
+                    Log.d("Camera", outfit);
                 }
             }
     );
@@ -201,5 +206,24 @@ public class ChooseClosetActivity extends AppCompatActivity {
                 openCamera();
             }
         }
+    }
+
+    // reference: https://iqcode.com/code/other/how-to-convert-bitmap-to-uri-in-android
+    public Uri getImageUri(Context context, Bitmap inImage) {
+
+        // Check if the permission is granted
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission not granted, request it
+            ActivityCompat.requestPermissions(ChooseClosetActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            return null;
+        }
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 }
