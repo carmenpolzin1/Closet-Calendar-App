@@ -1,15 +1,23 @@
 package com.cs407.closetcalendar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.MenuItem;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -19,6 +27,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -75,23 +85,25 @@ public class ClosetActivity extends AppCompatActivity {
             }
         });
 
-        DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper = new DBHelper(getApplicationContext());
+        Cursor cursor = dbHelper.getOutfitCursor();
+        loadImageGallery(cursor);
         // TODO Used database to get users saved images to display
 
         // Handle Add from Camera Roll Button
         currentRow = new TableRow(this);
         imageContainer = findViewById(R.id.imageTableLayout);
-        Button pickImage = findViewById(R.id.camRollButton);
-
-        pickImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("info", "Camera Button Clicked!");
-                pickMedia.launch(new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                        .build());
-            }
-        });
+//        Button pickImage = findViewById(R.id.camRollButton);
+//
+//        pickImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.i("info", "Camera Button Clicked!");
+//                pickMedia.launch(new PickVisualMediaRequest.Builder()
+//                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+//                        .build());
+//            }
+//        });
     }
 
     /**
@@ -125,25 +137,61 @@ public class ClosetActivity extends AppCompatActivity {
     }
 
     public void loadImageGallery(Cursor cursor) {
-        // TODO Parse through database and load outfit images in closet
-        // need to dynamically create ImageView for each outfit
-        /**
-        ImageView imageView = findViewById(R.id.imageView);
+        // Parse through database and load outfit images in closet
+
+        //table way
+        int columnCount = 3; // Number of columns in each row
+        int imageSizeInDp = 150; // set image size
+        int imageSizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, imageSizeInDp, getResources().getDisplayMetrics());
+        TableLayout tableLayout = findViewById(R.id.imageTableLayout);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                int colIdx = cursor.getColumnIndex("image_path");
-                String imagePath = cursor.getString(colIdx);
+                int colIdx = cursor.getColumnIndex("outfit");
+                String outfitImagePath = cursor.getString(colIdx);
 
-                // Load and display the image using a library like Glide
-                Glide.with(this).load(imagePath).into(imageView);
+                ImageView imageView = new ImageView(this);
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
+                        imageSizeInPx,
+                        imageSizeInPx
+                );
+                imageView.setLayoutParams(layoutParams);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // Crop the image to fit
 
-                // handle multiple images in your gallery
+                // Load and display the image
+//                    Glide.with(this).load(outfitImagePath).into(imageView);
+                Glide.with(getApplicationContext())
+                        .load(outfitImagePath)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                // Handle failure
+                                Log.d("GlideDebug", "Image failed at: " + outfitImagePath);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                // Handle successful loading
+                                Log.d("GlideDebug", "Image successfully loaded at: " + outfitImagePath);
+                                return false;
+                            }
+                        })
+                        .into(imageView);
+
+                // Create a new TableRow after every 'columnCount' ImageView
+                if (cursor.getPosition() % columnCount == 0) {
+                    TableRow tableRow = new TableRow(this);
+                    tableLayout.addView(tableRow);
+                }
+
+                // Add the ImageView to the current TableRow
+                TableRow currentRow = (TableRow) tableLayout.getChildAt(tableLayout.getChildCount() - 1);
+                currentRow.addView(imageView);
+
             } while (cursor.moveToNext());
 
             cursor.close();
         }
-         **/
-
     }
 }

@@ -16,8 +16,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,19 +67,30 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
     );
 
-    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // Callback is invoked after the user selects a media item or closes the photo picker.
-                if (uri != null) {
-                    Log.d("PhotoPicker", "Selected URI: " + uri);
-                    Glide.with(getApplicationContext()).load(uri).into(imageView);
-                    this.pickedImageUri = uri;
-                    this.outfit = uri.toString();
-                } else {
-                    Log.d("PhotoPicker", "No outfit selected");
+//    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+//            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+//                // Callback is invoked after the user selects a media item or closes the photo picker.
+//                if (uri != null) {
+//                    Log.d("PhotoPicker", "Selected URI: " + uri);
+//                    Glide.with(getApplicationContext()).load(uri).into(imageView);
+//                    this.pickedImageUri = uri;
+//                    this.outfit = uri.toString();
+//                } else {
+//                    Log.d("PhotoPicker", "No outfit selected");
+//                }
+//            });
+
+    private ImageButton albumButton;
+    private ActivityResultLauncher<Intent> photoPickerLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        this.pickedImageUri = data.getData();
+                        this.outfit = pickedImageUri.toString();
+                    }
                 }
             });
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +117,31 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
         });
 
+        // Choose from album/camera roll
+        albumButton = findViewById(R.id.albumButtonChoose);
+        albumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFilePicker();
+            }
+        });
+    }
+
+    /**
+     * Lets user choose image from the file directory
+     */
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*"); // Specify the type of files you want to pick, in this case, images
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        // Set the initial directory
+        File initialDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
+        Uri initialUri = Uri.fromFile(initialDirectory);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, initialUri);
+
+        photoPickerLauncher.launch(intent);
     }
 
 
@@ -112,11 +150,11 @@ public class ChooseClosetActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void onClickAlbumButtonChoose(View view){
-        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
-    }
+//    public void onClickAlbumButtonChoose(View view){
+//        pickMedia.launch(new PickVisualMediaRequest.Builder()
+//                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+//                .build());
+//    }
 
 //    public void onClickCameraButtonChoose(View view){
 //        //TODO open the camera activity, and save capture to outfit string
