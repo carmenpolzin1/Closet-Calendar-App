@@ -72,19 +72,6 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
     );
 
-//    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-//            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-//                // Callback is invoked after the user selects a media item or closes the photo picker.
-//                if (uri != null) {
-//                    Log.d("PhotoPicker", "Selected URI: " + uri);
-//                    Glide.with(getApplicationContext()).load(uri).into(imageView);
-//                    this.pickedImageUri = uri;
-//                    this.outfit = uri.toString();
-//                } else {
-//                    Log.d("PhotoPicker", "No outfit selected");
-//                }
-//            });
-
     private ImageButton albumButton;
     private ActivityResultLauncher<Intent> photoPickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -134,13 +121,14 @@ public class ChooseClosetActivity extends AppCompatActivity {
     }
 
     /**
-     * Lets user choose image from the file directory
+     * Lets user choose image from the phone's file directory. Launches photoPickerLauncher to save
+     * image to the database and display it in the activity's ImageView
      */
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*"); // Specify the type of files you want to pick, in this case, images
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // needed to grant uri permissions
 
         // Set the initial directory
         File initialDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
@@ -150,26 +138,6 @@ public class ChooseClosetActivity extends AppCompatActivity {
         photoPickerLauncher.launch(intent);
     }
 
-
-    /**
-     * Launches the Android Photo Picker where the user can select 1 photo to be uploaded.
-     *
-     * @param view
-     */
-//    public void onClickAlbumButtonChoose(View view){
-//        pickMedia.launch(new PickVisualMediaRequest.Builder()
-//                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-//                .build());
-//    }
-
-//    public void onClickCameraButtonChoose(View view){
-//        //TODO open the camera activity, and save capture to outfit string
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//        }
-//        //outfit=camera capture pathway
-//    }
 
     public void onClickExitButtonChoose(View view){
         Intent intent = new Intent(this, NewEntryActivity.class);
