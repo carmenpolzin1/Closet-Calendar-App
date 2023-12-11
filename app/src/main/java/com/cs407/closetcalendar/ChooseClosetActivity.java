@@ -87,6 +87,7 @@ public class ChooseClosetActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (data != null) {
                         this.pickedImageUri = data.getData();
+                        imageView.setImageURI(pickedImageUri);
                         this.outfit = pickedImageUri.toString();
                     }
                 }
