@@ -16,8 +16,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,7 +67,7 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
     );
 
-    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 // Callback is invoked after the user selects a media item or closes the photo picker.
                 if (uri != null) {
@@ -78,6 +80,18 @@ public class ChooseClosetActivity extends AppCompatActivity {
                 }
             });
     static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private ImageButton albumButton;
+    private ActivityResultLauncher<Intent> photoPickerLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        this.pickedImageUri = data.getData();
+                        this.outfit = pickedImageUri.toString();
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +118,28 @@ public class ChooseClosetActivity extends AppCompatActivity {
             }
         });
 
+        // Choose from album/camera roll
+        albumButton = findViewById(R.id.albumButtonChoose);
+        albumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFilePicker();
+            }
+        });
+    }
+
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*"); // Specify the type of files you want to pick, in this case, images
+
+        // Set the initial directory
+        File initialDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraX");
+        Uri initialUri = Uri.fromFile(initialDirectory);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, initialUri);
+
+        photoPickerLauncher.launch(intent);
     }
 
 

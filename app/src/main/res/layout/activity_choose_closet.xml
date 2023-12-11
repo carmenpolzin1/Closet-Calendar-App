@@ -6,107 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".ChooseClosetActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/exitButtonChoose"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="left"
-                android:background="#FEFAFD"
-                android:onClick="onClickExitButtonChoose"
-                android:scaleType="centerInside"
-                android:src="@drawable/exit_icon" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/exitButtonChoose"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="left"
+                    android:background="#FEFAFD"
+                    android:onClick="onClickExitButtonChoose"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/exit_icon" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/saveButtonChoose"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="right"
+                        android:background="#FEFAFD"
+                        android:onClick="onClickSaveButtonChoose"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/save_icon" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/closetTitleTextViewChoose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:gravity="center_horizontal"
+                android:text="Choose Outfit"
+                android:textSize="40sp" />
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="200dp"
+                android:layout_marginVertical="20dp"
+                android:background="@color/material_dynamic_neutral80">
 
-                <ImageButton
-                    android:id="@+id/saveButtonChoose"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="right"
-                    android:background="#FEFAFD"
-                    android:onClick="onClickSaveButtonChoose"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/save_icon" />
+                <ImageView
+                    android:id="@+id/outfitImageViewChoose"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/shirticon" />
             </FrameLayout>
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/closetTitleTextViewChoose"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:gravity="center_horizontal"
-            android:text="Choose Outfit"
-            android:textSize="40sp" />
+            <ImageButton
+                android:id="@+id/albumButtonChoose"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="#FEFAFD"
+                android:scaleType="centerInside"
+                android:src="@drawable/album_icon" />
+            <!--            android:onClick="onClickAlbumButtonChoose" -->
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginVertical="20dp"
-            android:background="@color/material_dynamic_neutral80">
-
-            <ImageView
-                android:id="@+id/outfitImageViewChoose"
+            <TextView
+                android:id="@+id/albumTextViewChoose"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:src="@drawable/shirticon" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal"
+                android:text="Choose from\nCamera Roll"
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
-        <ImageButton
-            android:id="@+id/albumButtonChoose"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:onClick="onClickAlbumButtonChoose"
-            android:background="#FEFAFD"
-            android:scaleType="centerInside"
-            android:src="@drawable/album_icon" />
+            <ImageButton
+                android:id="@+id/cameraButtonChoose"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="#FEFAFD"
+                android:onClick="openCamera"
+                android:scaleType="centerInside"
+                android:src="@drawable/camera_icon" />
 
-        <TextView
-            android:id="@+id/albumTextViewChoose"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center_horizontal"
-            android:text="Choose from\nCamera Roll"
-            android:textAlignment="center"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/cameraTextViewChoose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Take a Picture"
+                android:textSize="20sp" />
 
-        <ImageButton
-            android:id="@+id/cameraButtonChoose"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:background="#FEFAFD"
-            android:onClick="openCamera"
-            android:scaleType="centerInside"
-            android:src="@drawable/camera_icon" />
-
-        <TextView
-            android:id="@+id/cameraTextViewChoose"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="Take a Picture"
-            android:textSize="20sp" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
